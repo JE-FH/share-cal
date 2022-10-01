@@ -7,11 +7,9 @@ using ShareCalServer.Services;
 
 namespace ShareCalServer.Controllers;
 
-[ApiController]
-[Route("[controller]")]
 public class CalendarController : Controller
 {
-    private readonly CalendarMapper _calendarMapper;
+    private readonly ICalendarMapper _calendarMapper;
     private readonly ICalendarService _calendarService;
     private readonly ICreateCalendarMapper _createCalendarMapper;
     private readonly ICalendarEventService _calendarEventService;
@@ -19,7 +17,7 @@ public class CalendarController : Controller
     private readonly ICreateEventMapper _createEventMapper;
 
     public CalendarController(
-        CalendarMapper calendarMapper, 
+        ICalendarMapper calendarMapper, 
         ICalendarService calendarService, 
         ICreateCalendarMapper createCalendarMapper, 
         ICalendarEventService calendarEventService,
@@ -35,7 +33,15 @@ public class CalendarController : Controller
         _createEventMapper = createEventMapper;
     }
     
-    [HttpGet(Name = "{id:guid}")]
+    [HttpGet]
+    public async Task<ActionResult<List<CalendarBriefDto>>> GetCalendarList()
+    {
+        return (await _calendarService.GetCalendars())
+            .Select(calendar => _calendarMapper.CalendarToBriefDto(calendar))
+            .ToList();
+    }
+    
+    [HttpGet]
     public async Task<ActionResult<ShareCal.DTO.CalendarViewDTO>> Get(Guid id)
     {
         var calendar = await _calendarService.GetCalendar(id);
@@ -47,7 +53,7 @@ public class CalendarController : Controller
         return Ok(_calendarMapper.CalendarToDto(calendar));
     }
 
-    [HttpPost(Name = "")]
+    [HttpPost]
     public async Task<ActionResult<ShareCal.DTO.CalendarViewDTO>> Create([FromBody] CreateCalendarDTO dto)
     {
         var model = _createCalendarMapper.CreateCalendarToModel(dto);
@@ -55,7 +61,7 @@ public class CalendarController : Controller
         return Ok(_calendarMapper.CalendarToDto(calendar));
     }
 
-    [HttpGet(Name = "events/{eventGuid:guid}")]
+    [HttpGet]
     public async Task<ActionResult<FullEventDTO>> GetEvent(Guid eventGuid)
     {
         var calendarEvent = await _calendarEventService.GetEvent(eventGuid);
@@ -67,7 +73,7 @@ public class CalendarController : Controller
         return Ok(_calendarEventMapper.CalendarEventToFullDto(calendarEvent));
     }
     
-    [HttpPost(Name = "events")]
+    [HttpPost]
     public async Task<ActionResult<FullEventDTO>> CreateEvent([FromBody] CreateEventDTO dto)
     {
         var model = _createEventMapper.CreateEventToModel(dto);

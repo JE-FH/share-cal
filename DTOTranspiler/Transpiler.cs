@@ -1,3 +1,5 @@
+using System.Reflection;
+
 class Transpiler
 {
     private HashSet<Type> _dtos;
@@ -17,26 +19,28 @@ class Transpiler
     {
         var lines = new List<string>();
 
+        lines.Add("/* eslint-disable */");
+        
         foreach (var dto in _dtos)
         {
             lines.Add($"export class {dto.Name} {{");
             
-            foreach (var field in dto.GetFields())
+            foreach (var field in dto.GetProperties())
             {
-                var type = field.FieldType.UnderlyingSystemType;
+                var type = field.PropertyType.UnderlyingSystemType;
                 lines.Add($"\t{field.Name}: {GetTypescriptType(type)};");
             }
 
             lines.Add("\tconstructor(");
             
-            foreach (var field in dto.GetFields())
+            foreach (var field in dto.GetProperties())
             {
-                var type = field.FieldType.UnderlyingSystemType;
+                var type = field.PropertyType.UnderlyingSystemType;
                 lines.Add($"\t\t_{field.Name}: {GetTypescriptType(type)},");
             }
             lines.Add("\t) {");
             
-            foreach (var field in dto.GetFields())
+            foreach (var field in dto.GetProperties())
             {
                 lines.Add($"\t\tthis.{field.Name} = _{field.Name};");
             }
@@ -45,27 +49,37 @@ class Transpiler
             
             lines.Add("\tstatic FromObject(obj: Record<any, any>) {");
 
-            foreach (var field in dto.GetFields())
+            foreach (var field in dto.GetProperties())
             {
-                var type = field.FieldType.UnderlyingSystemType;
-                lines.Add($"\t\tif (!({GetTypescriptTypeAssertion(type, $"obj.{field.Name}")}))");
-                lines.Add($"\t\t\tthrow new Error('DTO Type mismatch, expected {field.Name} to be {GetTypescriptType(type)} but got ' + typeof(obj.{field.Name}));");
+                var type = field.PropertyType.UnderlyingSystemType;
+                lines.Add($"\t\tif (!({GetTypescriptTypeAssertion(type, $"obj.{GetSerializedName(field)}")}))");
+                lines.Add($"\t\t\tthrow new Error('DTO Type mismatch, expected {GetSerializedName(field)} to be {GetTypescriptType(type)} but got ' + typeof(obj.{GetSerializedName(field)}));");
             }
             
             lines.Add($"\t\treturn new {dto.Name}(");
-            foreach (var field in dto.GetFields())
+            foreach (var field in dto.GetProperties())
             {
-                var type = field.FieldType.UnderlyingSystemType;
+                var type = field.PropertyType.UnderlyingSystemType;
                 var converter = GetTypescriptConverter(type);
                 if (converter == null)
-                    lines.Add($"\t\t\tobj.{field.Name},");
+                    lines.Add($"\t\t\tobj.{GetSerializedName(field)},");
                 else
-                    lines.Add($"\t\t\t{converter}(obj.{field.Name}),");
+                    lines.Add($"\t\t\t{converter}(obj.{GetSerializedName(field)}),");
             }
             lines.Add($"\t\t);");
             
             lines.Add("\t}");
 
+            lines.Add("\tpublic ToJson(): string {");
+            lines.Add("\t\tlet obj: Record<any, any> = {}");
+            foreach (var field in dto.GetProperties())
+            {
+                lines.Add($"\t\tobj.{GetSerializedName(field)} = this.{field.Name};");
+            }
+            lines.Add("\t\treturn JSON.stringify(obj)");
+
+            lines.Add("\t}");
+            
             lines.Add("}");
         }
 
@@ -113,7 +127,7 @@ class Transpiler
         {
             var innerConverter = GetTypescriptConverter(type.GenericTypeArguments[0]);
             if (innerConverter != null)
-                return $"((x) => x.map(y => {innerConverter}(y)))";
+                return $"((x: Array<any>) => x.map(y => {innerConverter}(y)))";
             return null;
         }
         if (_dtos.Contains(type))
@@ -137,15 +151,19 @@ class Transpiler
         if (typeof(double) == type)
             return $"!Number.isNaN({name})";
         if (type.IsGenericType && typeof(List<int>).GetGenericTypeDefinition() == type.GetGenericTypeDefinition())
-            return $"{name} instanceof Array && ({name} as Array<any>).every(x => ({GetTypescriptTypeAssertion(type.GetGenericArguments()[0], "x")}))";
+            return $"{name} instanceof Array";
         if (_dtos.Contains(type))
         {
-            return String.Join("&&", type.GetFields().Select(field =>
-            {
-                return $"({GetTypescriptTypeAssertion(field.FieldType.UnderlyingSystemType, $"{name}.{field.Name}")})";
-            }));
+            return String.Join("&&", type.GetProperties().Select(field => 
+                $"(typeof({name}) == 'object')"
+            ));
         }
         Console.WriteLine($"WARNING: Could not translate type {type}, defaulting to any");
         return "true";
+    }
+
+    string GetSerializedName(PropertyInfo property)
+    {
+        return property.Name.Substring(0, 1).ToLower() + property.Name.Substring(1);
     }
 }

@@ -1,4 +1,5 @@
 using ShareCalServer.Mappers;
+using ShareCalServer.Models;
 using ShareCalServer.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,17 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.UseCors(options =>
+{
+    options.AllowAnyOrigin();
+    options.AllowAnyMethod();
+    options.AllowAnyHeader();
+});
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -32,5 +44,11 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var context = new Entities())
+{
+    var inclusions = context.CalendarEventInclusions.ToList();
+    
+}
 
 app.Run();

@@ -50,6 +50,9 @@ public class Entities : DbContext
                 .ValueGeneratedOnAdd();
         });
 
+        modelBuilder.Entity<CalendarEventInclusion>()
+            .HasKey(cei => new { cei.CalendarGuid, cei.CalendarEventGuid });
+        
         modelBuilder.Entity<Calendar>(entity =>
         {
             entity.HasKey(c => c.Guid);
@@ -69,8 +72,9 @@ public class Entities : DbContext
                         .WithMany(c => c.CalendarEventInclusions)
                         .HasForeignKey(cei => cei.CalendarGuid),
                     j => j
-                        .HasKey(cei => new { cei.CalendarGuid, cei.CalendarEventGuid })
+                        .HasKey(t => new { t.CalendarGuid, t.CalendarEventGuid })
                 );
+
         });
         modelBuilder.Entity<CalendarEvent>(entity =>
         {

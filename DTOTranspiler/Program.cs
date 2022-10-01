@@ -7,12 +7,12 @@ using ShareCal.DTO;
 Transpiler transpiler = new Transpiler();
 
 transpiler
-    .AddDto(typeof(CalendarEventDTO))
     .AddDto(typeof(CalendarViewDTO))
     .AddDto(typeof(CreateCalendarDTO))
     .AddDto(typeof(CreateEventDTO))
     .AddDto(typeof(EventBriefDTO))
-    .AddDto(typeof(FullEventDTO));
+    .AddDto(typeof(FullEventDTO))
+    .AddDto(typeof(CalendarBriefDto));
 
 File.WriteAllText("../frontend/src/generated/DTO.ts", transpiler.TranspileToTypescript());
 

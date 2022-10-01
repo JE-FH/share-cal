@@ -2,10 +2,10 @@ namespace ShareCal.DTO;
 
 public class CreateEventDTO
 {
-    public DateTime EventStart;
-    public DateTime EventEnd;
-    public string Summary;
-    public string Description;
-    public string Location;
-    public List<Guid> CalendarsIncludedIn;
+    public DateTime EventStart { get; set; }
+    public DateTime EventEnd { get; set; }
+    public string Summary { get; set; }
+    public string Description { get; set; }
+    public string Location { get; set; }
+    public List<Guid> CalendarsIncludedIn { get; set; }
 }

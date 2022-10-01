@@ -2,9 +2,9 @@
 
 public class CalendarViewDTO
 {
-    public Guid Guid;
-    public string Name;
-    public DateTime RangeStart;
-    public DateTime RangeEnd;
-    public List<EventBriefDTO> Events;
+    public Guid Guid { get; set; }
+    public string Name { get; set; }
+    public DateTime RangeStart { get; set; }
+    public DateTime RangeEnd { get; set; }
+    public List<EventBriefDTO> Events { get; set; }
 }

@@ -1,6 +1,7 @@
 namespace ShareCal.DTO;
 
-public class CreateCalendarDTO
+public class CalendarBriefDto
 {
+    public Guid Guid { get; set; }
     public string Name { get; set; }
 }

@@ -34,7 +34,7 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx"
-  ],
+, "src/models/CalendarViewts"  ],
   "exclude": [
     "node_modules"
   ]

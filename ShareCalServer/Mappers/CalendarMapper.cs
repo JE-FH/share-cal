@@ -6,6 +6,7 @@ namespace ShareCalServer.Mappers;
 public interface ICalendarMapper
 {
     CalendarViewDTO CalendarToDto(Calendar calendar);
+    CalendarBriefDto CalendarToBriefDto(Calendar calendar);
 }
 
 public class CalendarMapper : ICalendarMapper
@@ -31,6 +32,15 @@ public class CalendarMapper : ICalendarMapper
             RangeStart = DateTime.MinValue,
             RangeEnd = DateTime.MaxValue,
             Events = events
+        };
+    }
+
+    public CalendarBriefDto CalendarToBriefDto(Calendar calendar)
+    {
+        return new CalendarBriefDto()
+        {
+            Guid = calendar.Guid,
+            Name = calendar.Name
         };
     }
 }
