@@ -1,11 +1,11 @@
 <script setup lang="ts">
 	import { provide } from 'vue';
 	import { CalendarAPI } from './Helpers/CalendarAPI';
-	import { DateHelper } from './Helpers/DateHelper';
-	import { calendarApiSymbol, dateHelperSymbol } from './injectionKeys';
+	import { DateTimeHelper } from './Helpers/DateTimeHelper';
+	import { calendarApiSymbol, dateTimeHelperSymbol } from './injectionKeys';
 	
 	provide(calendarApiSymbol, new CalendarAPI());
-	provide(dateHelperSymbol, new DateHelper());
+	provide(dateTimeHelperSymbol, new DateTimeHelper());
 </script>
 
 

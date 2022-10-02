@@ -7,23 +7,21 @@ function parseDatePickerDate(date: string): DateOnly {
 		day: Number(split[2])
 	};
 }
-
-function encodeDatePickerDate(date: DateOnly): string {
-	return `${date.year}-${date.month}-${date.day}`;
-}
 </script>
 
 <script setup lang="ts">
-import { DateOnly } from '@/Helpers/DateHelper';
-import { dateHelperSymbol } from '@/injectionKeys';
+import { DateOnly } from '@/Helpers/DateTimeHelper';
+import { dateTimeHelperSymbol } from '@/injectionKeys';
 import { ref, defineProps, defineEmits, inject, unref, toRaw, markRaw } from 'vue';
 import { VMenu } from 'vuetify/lib/components';
 
-const dateHelper = inject(dateHelperSymbol, () => {throw new Error("IDateHelper is required")}, true);
+const dateHelper = inject(dateTimeHelperSymbol, () => {throw new Error("IDateHelper is required")}, true);
 
 const props = defineProps<{
 	date: DateOnly;
-	label: string;
+	label?: string;
+	prependIcon?: string;
+	earliestDate?: DateOnly;
 }>();
 
 const emit = defineEmits<{
@@ -38,7 +36,9 @@ const unconfirmedDate = ref<DateOnly>({
 	day: props.date.day
 });
 
-
+function encodeDatePickerDate(date: DateOnly): string {
+	return `${date.year.toString().padStart(2, '0')}-${date.month.toString().padStart(2, '0')}-${date.day.toString().padStart(2, '0')}`;
+}
 
 function dateConfirm() {
 	menu.value = false;
@@ -66,19 +66,19 @@ function datePickerChanged(dateString: string) {
 	>
 		<template v-slot:activator="{ on, attrs }">
 			<v-text-field
-				label="Picker in menu"
-				prepend-icon="mdi-calendar"
+				:prepend-icon="props.prependIcon"
 				readonly
 				v-bind="attrs"
 				v-on="on"
+				:label="props.label"
 				:value="dateHelper.FormatDateOnly(props.date)"
 			></v-text-field>
 		</template>
 		<v-date-picker
-			no-title
 			scrollable
 			@change="datePickerChanged"
 			:value="encodeDatePickerDate(unconfirmedDate)"
+			:min="props.earliestDate != null ? encodeDatePickerDate(props.earliestDate) : undefined"
 		>
 			<v-spacer></v-spacer>
 			<v-btn
