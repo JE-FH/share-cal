@@ -95,6 +95,8 @@ class Transpiler
             return "string";
         if (typeof(DateTime) == type)
             return "Date";
+        if (typeof(DateTimeOffset) == type)
+            return "Date";
         if (typeof(int) == type)
             return "number";
         if (typeof(float) == type)
@@ -116,6 +118,8 @@ class Transpiler
         if (typeof(string) == type)
             return null;
         if (typeof(DateTime) == type)
+            return "new Date";
+        if (typeof(DateTimeOffset) == type)
             return "new Date";
         if (typeof(int) == type)
             return null;
@@ -144,6 +148,8 @@ class Transpiler
             return $"typeof({name}) == 'string'";
         if (typeof(DateTime) == type)
             return $"!Number.isNaN(new Date({name}).getTime())";
+        if (typeof(DateTimeOffset) == type)
+            return $"!Number.isNaN(new Date({name}).getTime())";
         if (typeof(int) == type)
             return $"Number.isInteger({name})";
         if (typeof(float) == type)
@@ -164,6 +170,6 @@ class Transpiler
 
     string GetSerializedName(PropertyInfo property)
     {
-        return property.Name.Substring(0, 1).ToLower() + property.Name.Substring(1);
+        return property.Name; //property.Name.Substring(0, 1).ToLower() + property.Name.Substring(1);
     }
 }

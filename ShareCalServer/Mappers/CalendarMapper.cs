@@ -29,8 +29,8 @@ public class CalendarMapper : ICalendarMapper
         {
             Guid = calendar.Guid,
             Name = calendar.Name,
-            RangeStart = DateTime.MinValue,
-            RangeEnd = DateTime.MaxValue,
+            RangeStart = DateTimeOffset.MinValue,
+            RangeEnd = DateTimeOffset.MaxValue,
             Events = events
         };
     }

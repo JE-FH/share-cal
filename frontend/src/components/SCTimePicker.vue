@@ -24,6 +24,7 @@ const props = defineProps<{
 	label?: string;
 	prependIcon?: string;
 	earliestTime?: TimeOnly;
+	disabled?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -43,10 +44,12 @@ const ClockFormat = computed(() => {
 })
 
 function timePickerChanged(newTime: string) {
+	console.log(newTime);
 	unconfirmedTime.value = decodeTimePickerTime(newTime);
 }
 
 function confirmTime() {
+	console.log(JSON.parse(JSON.stringify(unconfirmedTime.value)));
 	emit("change", {
 		hour: unconfirmedTime.value.hour,
 		minute: unconfirmedTime.value.minute,
@@ -59,6 +62,22 @@ function encodeTimePickerTime(time: TimeOnly): string {
 	return `${time.hour.toString().padStart(2, '0')}:${time.minute.toString().padStart(2, '0')}:${time.seconds.toString().padStart(2, '0')}`;
 }
 
+function closeAndReset() {
+	unconfirmedTime.value = {
+		hour: props.time.hour,
+		minute: props.time.minute,
+		seconds: props.time.seconds
+	};
+
+	menu.value = false;
+}
+
+function onMenuChange(isOpen: boolean) {
+	if (!isOpen) {
+		closeAndReset();
+	}
+}
+
 </script>
 
 <template>
@@ -68,7 +87,9 @@ function encodeTimePickerTime(time: TimeOnly): string {
 		transition="scale-transition"
 		offset-y
 		min-width="auto"
+		@input="onMenuChange"
 		:label="props.label"
+		:disabled="props.disabled"
 	>
 		<template v-slot:activator="{ on, attrs }">
 			<v-text-field
@@ -78,20 +99,21 @@ function encodeTimePickerTime(time: TimeOnly): string {
 				v-bind="attrs"
 				v-on="on"
 				:value="dateHelper.FormatTimeOnly(props.time)"
-			></v-text-field>
+				:disabled="props.disabled" />
 		</template>
 		<v-time-picker
 			:format="ClockFormat"
 			scrollable
-			@change="timePickerChanged"
+			@input="timePickerChanged"
 			:value="encodeTimePickerTime(unconfirmedTime)"
 			:min="props.earliestTime != null ? encodeTimePickerTime(props.earliestTime) : undefined"
+			:disabled="props.disabled"
 			>
 			<v-spacer></v-spacer>
 			<v-btn
 				color="primary"
 				text
-				@click="menu = false"
+				@click="closeAndReset()"
 			>
 				Cancel
 			</v-btn>

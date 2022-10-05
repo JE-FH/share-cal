@@ -24,26 +24,30 @@ public class CalendarEventService : ICalendarEventService
     public async Task<CalendarEvent> CreateEvent(CreateEventModel model)
     {
         await using var entities = new Entities();
-        var newEvent = await entities.CalendarEvents.AddAsync(
+        var newGuid = (await entities.CalendarEvents.AddAsync(
             new CalendarEvent()
             {
                 EventStart = model.EventStart,
                 EventEnd = model.EventEnd,
                 Summary = model.Summary,
                 Description = model.Description,
-                Location = model.Location
-            });
-        var newGuid = newEvent.Entity.Guid;
+                Location = model.Location,
+                DateCreated = DateTime.Now,
+                LastModified = DateTime.Now
+            }
+            )).Entity.Guid;
 
         await entities.CalendarEventInclusions.AddRangeAsync(
             model.CalendarsIncludedIn
                 .Select(guid => new CalendarEventInclusion()
                 {
                     CalendarGuid = guid,
-                    CalendarEventGuid = newEvent.Entity.Guid
+                    CalendarEventGuid = newGuid
                 })
         );
 
+        await entities.SaveChangesAsync();
+        
         return await entities.CalendarEvents.SingleAsync(ce => ce.Guid == newGuid);
     }
 }

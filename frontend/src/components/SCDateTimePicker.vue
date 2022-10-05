@@ -10,6 +10,7 @@ const dateHelper = inject(dateTimeHelperSymbol, () => {throw new Error("IDateHel
 const props = defineProps<{
 	dateTime: Date;
 	earliestDateTime?: Date;
+	disabled?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -25,7 +26,6 @@ const date = computed<DateOnly>(() => {
 });
 
 function dateChanged(newDate: DateOnly) {
-	console.log("change date")
 	emit("change", dateHelper.ToDate(newDate, time.value));
 }
 
@@ -58,10 +58,10 @@ const earliestDate = computed<DateOnly | undefined>(() => {
 <template>
 	<v-row>
 		<v-col cols="6" no-gutters>
-			<SCDatePicker :earliestDate="earliestDate" :date="date" label="Date" @change="dateChanged"/>
+			<SCDatePicker :earliestDate="earliestDate" :date="date" label="Date" @change="dateChanged" :disabled="props.disabled"/>
 		</v-col>
 		<v-col cols="6" no-gutters>
-			<SCTimePicker :earliestTime="earliestTime" :time="time" label="Time" @change="timeChanged"/>
+			<SCTimePicker :earliestTime="earliestTime" :time="time" label="Time" @change="timeChanged" :disabled="props.disabled"/>
 		</v-col>
 	</v-row>
 	

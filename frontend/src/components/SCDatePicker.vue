@@ -22,6 +22,7 @@ const props = defineProps<{
 	label?: string;
 	prependIcon?: string;
 	earliestDate?: DateOnly;
+	disabled?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -53,6 +54,21 @@ function datePickerChanged(dateString: string) {
 	unconfirmedDate.value = parseDatePickerDate(dateString);
 }
 
+function closeAndReset() {
+	menu.value = false;
+	unconfirmedDate.value = {
+		year: props.date.year,
+		month: props.date.month,
+		day: props.date.day
+	};
+}
+
+function menuChanged(isOpen: boolean) {
+	if (!isOpen) {
+		closeAndReset();
+	}
+}
+
 </script>
 
 <template>
@@ -63,6 +79,8 @@ function datePickerChanged(dateString: string) {
 		offset-y
 		min-width="auto"
 		:label="label"
+		@input="menuChanged"
+		:disabled="props.disabled"
 	>
 		<template v-slot:activator="{ on, attrs }">
 			<v-text-field
@@ -72,19 +90,20 @@ function datePickerChanged(dateString: string) {
 				v-on="on"
 				:label="props.label"
 				:value="dateHelper.FormatDateOnly(props.date)"
-			></v-text-field>
+				:disabled="props.disabled" />
 		</template>
 		<v-date-picker
 			scrollable
 			@change="datePickerChanged"
 			:value="encodeDatePickerDate(unconfirmedDate)"
 			:min="props.earliestDate != null ? encodeDatePickerDate(props.earliestDate) : undefined"
+			:disabled="props.disabled"
 		>
 			<v-spacer></v-spacer>
 			<v-btn
 				text
 				color="primary"
-				@click="menu = false"
+				@click="closeAndReset"
 			>
 				Cancel
 			</v-btn>
