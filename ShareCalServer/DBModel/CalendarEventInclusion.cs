@@ -1,4 +1,4 @@
-namespace ShareCalServer.Models;
+namespace ShareCalServer.DBModel;
 
 public class CalendarEventInclusion
 {

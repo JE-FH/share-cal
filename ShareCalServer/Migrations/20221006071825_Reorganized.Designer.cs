@@ -4,22 +4,22 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using ShareCalServer.Models;
+using ShareCalServer.DBModel;
 
 #nullable disable
 
 namespace ShareCalServer.Migrations
 {
     [DbContext(typeof(Entities))]
-    [Migration("20220926070210_Something")]
-    partial class Something
+    [Migration("20221006071825_Reorganized")]
+    partial class Reorganized
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.8");
 
-            modelBuilder.Entity("ShareCalServer.Models.CachedCalendarEvent", b =>
+            modelBuilder.Entity("ShareCalServer.DBModel.CachedCalendarEvent", b =>
                 {
                     b.Property<Guid>("Guid")
                         .ValueGeneratedOnAdd()
@@ -28,27 +28,27 @@ namespace ShareCalServer.Migrations
                     b.Property<Guid>("CalendarSourceGuid")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("DateCreated")
+                    b.Property<DateTimeOffset>("DateCreated")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("EventEnd")
+                    b.Property<DateTimeOffset>("EventEnd")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("EventStart")
+                    b.Property<DateTimeOffset>("EventStart")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("LastModified")
+                    b.Property<DateTimeOffset>("LastModified")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Location")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("Retrieved")
+                    b.Property<DateTimeOffset>("Retrieved")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
@@ -63,7 +63,7 @@ namespace ShareCalServer.Migrations
                     b.ToTable("CachedCalendarEvents");
                 });
 
-            modelBuilder.Entity("ShareCalServer.Models.Calendar", b =>
+            modelBuilder.Entity("ShareCalServer.DBModel.Calendar", b =>
                 {
                     b.Property<Guid>("Guid")
                         .ValueGeneratedOnAdd()
@@ -78,13 +78,13 @@ namespace ShareCalServer.Migrations
                     b.ToTable("Calendars");
                 });
 
-            modelBuilder.Entity("ShareCalServer.Models.CalendarEvent", b =>
+            modelBuilder.Entity("ShareCalServer.DBModel.CalendarEvent", b =>
                 {
                     b.Property<Guid>("Guid")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("DateCreated")
+                    b.Property<DateTimeOffset>("DateCreated")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
@@ -92,13 +92,13 @@ namespace ShareCalServer.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("EventEnd")
+                    b.Property<DateTimeOffset>("EventEnd")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("EventStart")
+                    b.Property<DateTimeOffset>("EventStart")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("LastModified")
+                    b.Property<DateTimeOffset>("LastModified")
                         .ValueGeneratedOnUpdate()
                         .HasColumnType("TEXT");
 
@@ -115,7 +115,7 @@ namespace ShareCalServer.Migrations
                     b.ToTable("CalendarEvents");
                 });
 
-            modelBuilder.Entity("ShareCalServer.Models.CalendarEventInclusion", b =>
+            modelBuilder.Entity("ShareCalServer.DBModel.CalendarEventInclusion", b =>
                 {
                     b.Property<Guid>("CalendarGuid")
                         .HasColumnType("TEXT");
@@ -130,7 +130,7 @@ namespace ShareCalServer.Migrations
                     b.ToTable("CalendarEventInclusions");
                 });
 
-            modelBuilder.Entity("ShareCalServer.Models.CalendarSource", b =>
+            modelBuilder.Entity("ShareCalServer.DBModel.CalendarSource", b =>
                 {
                     b.Property<Guid>("Guid")
                         .ValueGeneratedOnAdd()
@@ -153,7 +153,7 @@ namespace ShareCalServer.Migrations
                     b.ToTable("CalendarSources");
                 });
 
-            modelBuilder.Entity("ShareCalServer.Models.CalendarView", b =>
+            modelBuilder.Entity("ShareCalServer.DBModel.CalendarView", b =>
                 {
                     b.Property<Guid>("Guid")
                         .ValueGeneratedOnAdd()
@@ -168,9 +168,9 @@ namespace ShareCalServer.Migrations
                     b.ToTable("CalendarViews");
                 });
 
-            modelBuilder.Entity("ShareCalServer.Models.CachedCalendarEvent", b =>
+            modelBuilder.Entity("ShareCalServer.DBModel.CachedCalendarEvent", b =>
                 {
-                    b.HasOne("ShareCalServer.Models.CalendarSource", "CalendarSource")
+                    b.HasOne("ShareCalServer.DBModel.CalendarSource", "CalendarSource")
                         .WithMany("CachedCalendarEvents")
                         .HasForeignKey("CalendarSourceGuid")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -179,15 +179,15 @@ namespace ShareCalServer.Migrations
                     b.Navigation("CalendarSource");
                 });
 
-            modelBuilder.Entity("ShareCalServer.Models.CalendarEventInclusion", b =>
+            modelBuilder.Entity("ShareCalServer.DBModel.CalendarEventInclusion", b =>
                 {
-                    b.HasOne("ShareCalServer.Models.CalendarEvent", "CalendarEvent")
+                    b.HasOne("ShareCalServer.DBModel.CalendarEvent", "CalendarEvent")
                         .WithMany("CalendarEventInclusions")
                         .HasForeignKey("CalendarEventGuid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ShareCalServer.Models.Calendar", "Calendar")
+                    b.HasOne("ShareCalServer.DBModel.Calendar", "Calendar")
                         .WithMany("CalendarEventInclusions")
                         .HasForeignKey("CalendarGuid")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -198,9 +198,9 @@ namespace ShareCalServer.Migrations
                     b.Navigation("CalendarEvent");
                 });
 
-            modelBuilder.Entity("ShareCalServer.Models.CalendarSource", b =>
+            modelBuilder.Entity("ShareCalServer.DBModel.CalendarSource", b =>
                 {
-                    b.HasOne("ShareCalServer.Models.CalendarView", "CalendarView")
+                    b.HasOne("ShareCalServer.DBModel.CalendarView", "CalendarView")
                         .WithMany("Sources")
                         .HasForeignKey("CalendarViewGuid")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -209,22 +209,22 @@ namespace ShareCalServer.Migrations
                     b.Navigation("CalendarView");
                 });
 
-            modelBuilder.Entity("ShareCalServer.Models.Calendar", b =>
+            modelBuilder.Entity("ShareCalServer.DBModel.Calendar", b =>
                 {
                     b.Navigation("CalendarEventInclusions");
                 });
 
-            modelBuilder.Entity("ShareCalServer.Models.CalendarEvent", b =>
+            modelBuilder.Entity("ShareCalServer.DBModel.CalendarEvent", b =>
                 {
                     b.Navigation("CalendarEventInclusions");
                 });
 
-            modelBuilder.Entity("ShareCalServer.Models.CalendarSource", b =>
+            modelBuilder.Entity("ShareCalServer.DBModel.CalendarSource", b =>
                 {
                     b.Navigation("CachedCalendarEvents");
                 });
 
-            modelBuilder.Entity("ShareCalServer.Models.CalendarView", b =>
+            modelBuilder.Entity("ShareCalServer.DBModel.CalendarView", b =>
                 {
                     b.Navigation("Sources");
                 });

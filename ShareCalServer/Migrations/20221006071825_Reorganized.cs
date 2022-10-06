@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ShareCalServer.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class Reorganized : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,13 +14,13 @@ namespace ShareCalServer.Migrations
                 columns: table => new
                 {
                     Guid = table.Column<Guid>(type: "TEXT", nullable: false),
-                    EventStart = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    EventEnd = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    EventStart = table.Column<DateTimeOffset>(type: "TEXT", nullable: false),
+                    EventEnd = table.Column<DateTimeOffset>(type: "TEXT", nullable: false),
                     Summary = table.Column<string>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: false),
                     Location = table.Column<string>(type: "TEXT", nullable: false),
-                    LastModified = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    LastModified = table.Column<DateTimeOffset>(type: "TEXT", nullable: false),
+                    DateCreated = table.Column<DateTimeOffset>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -100,15 +100,15 @@ namespace ShareCalServer.Migrations
                 columns: table => new
                 {
                     Guid = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Retrieved = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Retrieved = table.Column<DateTimeOffset>(type: "TEXT", nullable: false),
                     CalendarSourceGuid = table.Column<Guid>(type: "TEXT", nullable: false),
-                    EventStart = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    EventEnd = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    EventStart = table.Column<DateTimeOffset>(type: "TEXT", nullable: false),
+                    EventEnd = table.Column<DateTimeOffset>(type: "TEXT", nullable: false),
                     Summary = table.Column<string>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: false),
                     Location = table.Column<string>(type: "TEXT", nullable: false),
-                    LastModified = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    LastModified = table.Column<DateTimeOffset>(type: "TEXT", nullable: false),
+                    DateCreated = table.Column<DateTimeOffset>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {

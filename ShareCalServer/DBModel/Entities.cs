@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace ShareCalServer.Models;
+namespace ShareCalServer.DBModel;
 
 public class Entities : DbContext
 {

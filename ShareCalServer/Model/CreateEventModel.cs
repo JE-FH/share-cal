@@ -1,4 +1,4 @@
-namespace ShareCalServer.Models;
+namespace ShareCalServer.Model;
 
 public class CreateEventModel
 {

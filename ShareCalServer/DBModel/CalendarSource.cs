@@ -1,4 +1,4 @@
-namespace ShareCalServer.Models;
+namespace ShareCalServer.DBModel;
 
 public class CalendarSource
 {
@@ -13,5 +13,6 @@ public class CalendarSource
 public enum CalendarSourceType
 {
     ShareCal,
-    ICal
+    ICal,
+    CalDAV
 }

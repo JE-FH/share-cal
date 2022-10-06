@@ -1,5 +1,4 @@
 using ShareCalServer.Mappers;
-using ShareCalServer.Models;
 using ShareCalServer.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +12,8 @@ builder.Services.AddScoped<ICreateCalendarMapper, CreateCalendarMapper>();
 builder.Services.AddScoped<ICalendarService, CalendarService>();
 builder.Services.AddScoped<ICalendarEventService, CalendarEventService>();
 builder.Services.AddScoped<ICreateEventMapper, CreateEventMapper>();
+builder.Services.AddScoped<IExternalCalendarService, ExternalCalendarService>();
+builder.Services.AddScoped<ICalendarViewService, CalendarViewService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -49,11 +50,5 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-
-using (var context = new Entities())
-{
-    var inclusions = context.CalendarEventInclusions.ToList();
-    
-}
 
 app.Run();

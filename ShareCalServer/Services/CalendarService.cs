@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using ShareCalServer.Models;
+using ShareCalServer.DBModel;
+using ShareCalServer.Model;
 
 namespace ShareCalServer.Services;
 

@@ -1,5 +1,5 @@
 using ShareCal.DTO;
-using ShareCalServer.Models;
+using ShareCalServer.Model;
 
 namespace ShareCalServer.Mappers;
 

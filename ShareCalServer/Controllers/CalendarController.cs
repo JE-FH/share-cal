@@ -1,6 +1,4 @@
-using ShareCalServer.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ShareCal.DTO;
 using ShareCalServer.Mappers;
 using ShareCalServer.Services;
