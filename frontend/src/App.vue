@@ -8,7 +8,6 @@
 	provide(dateTimeHelperSymbol, new DateTimeHelper());
 </script>
 
-
 <template>
 	<v-app>
 		<router-view></router-view>

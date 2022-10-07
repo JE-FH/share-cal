@@ -14,6 +14,10 @@ transpiler
     .AddDto(typeof(FullEventDTO))
     .AddDto(typeof(CalendarBriefDto));
 
+if (!Directory.Exists("../frontend/src/generated")) {
+    Directory.CreateDirectory("../frontend/src/generated");
+}
+
 File.WriteAllText("../frontend/src/generated/DTO.ts", transpiler.TranspileToTypescript());
 
 //Console.WriteLine(transpiler.TranspileToTypescript());
